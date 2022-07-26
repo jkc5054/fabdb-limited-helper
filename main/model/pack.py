@@ -1,12 +1,13 @@
 from ast import keyword
 import json
 import random
+import jsonpickle
 from collections import namedtuple
 from json import JSONEncoder
 
 from pyparsing import And
 from scipy import rand
-from card import Card
+from main.model.card import Card
 
 def customCardDecoder(cardDict):
     return namedtuple('X', cardDict.keys())(*cardDict.values())
@@ -18,14 +19,15 @@ def customCardDecoder(cardDict):
 #print(cardJSON)
 
 class Pack:
-    def __init__(self, cards):
+    def __init__(self):
         self.cards = []
 
     def generate_pack(self):
         with open('cards.json', 'r') as data_file:
             json_data = data_file.read()
 
-        data = json.loads(json_data, object_hook=customCardDecoder)
+        #data = json.loads(json_data, object_hook=customCardDecoder)
+        data = jsonpickle.decode(json_data)
         #print(data[0].identifier)
 
         #pack structure
@@ -43,7 +45,8 @@ class Pack:
         foil_slot = []
         class_slot = []
 
-        for i in data:
+        for x in data:
+            i = Card(x['identifier'], x['rarity'], x['keywords'], x['stats'], x['image_url'])
             # populate the talent_slot
             if (i.rarity == 'C' and  
             ('generic' in i.keywords or 'draconic' in i.keywords or 'ice' in i.keywords) and 
@@ -92,7 +95,12 @@ class Pack:
         pack.append(random.choice(class_slot))
         pack.append(random.choice(class_slot))
 
-        for i in pack:
-            print(i)
+        #for i in pack:
+        #    print(i)
 
         self.cards = pack
+
+class PackEncoder(JSONEncoder):
+    def default(self, o):
+        return o.__dict__
+        

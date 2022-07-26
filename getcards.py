@@ -2,9 +2,10 @@ import requests
 import shutil
 import json
 import time
+import jsonpickle
 
-from card import Card
-from card import CardEncoder
+from main.model.card import Card
+from main.model.card import CardEncoder
 
 
 
@@ -40,5 +41,5 @@ for i in range(224):
     time.sleep(1)
 
 f = open("cards.json", "w")
-f.write(json.dumps(cardList, cls=CardEncoder))
+f.write(jsonpickle.encode(cardList, cls=CardEncoder))
 f.close()

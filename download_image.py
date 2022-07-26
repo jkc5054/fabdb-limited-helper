@@ -3,8 +3,8 @@ import shutil
 import json
 import time
 
-from card import Card
-from card import CardEncoder
+from main.model.card import Card
+from main.model.card import CardEncoder
 
 
 
