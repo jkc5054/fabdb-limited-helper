@@ -36,22 +36,27 @@ class PackAPI(Resource):
 
 class GameAPI(Resource):
     def get(self):
-        return json.dumps(games)
+        resp = json.dumps(games)
+        return resp
 
     def post(self):
         args = parser.parse_args()
         game = Game(None)
         games.append(game)
-        return game.gameid
+        resp = make_response(game.gameid, 200)
+        return resp
 
 class PlayerAPI(Resource):
     def get(self):
-        return json.dumps(players, cls=PlayerEncoder)
-    
+        resp = json.dumps(players, cls=PlayerEncoder)
+        return resp
+
     def put(self):
         args = parser.parse_args()
         player = Player(str(uuid4()), args['player_name'])
         players.append(player)
+        resp = make_response(200)
+        return resp
 
 class LobbyAPI(Resource):
     def get(self):
