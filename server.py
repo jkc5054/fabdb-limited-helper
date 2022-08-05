@@ -22,7 +22,6 @@ players = []
 lobbies = []
 games = []
 
-pack_fields = {'cards': []}
 class PackAPI(Resource):
     def get(self):
         p = Pack()
@@ -60,13 +59,16 @@ class PlayerAPI(Resource):
 
 class LobbyAPI(Resource):
     def get(self):
-        return json.dumps(lobbies, cls=LobbyEncoder)
+        resp = make_response(json.dumps(lobbies, cls=LobbyEncoder), 200)
+        return resp
 
     def put(self):
         args = parser.parse_args()
         name = args['lobby_name']
         lobby = Lobby(name)
         lobbies.append(lobby)
+        resp = make_response("", 200)
+        return resp
 
 class LobbyInfoAPI(Resource):
     def post(self):
@@ -77,7 +79,8 @@ class LobbyInfoAPI(Resource):
             if l.name == lobby_name:
                 lobby = l
                 break
-        return json.dumps(lobby, cls=LobbyEncoder)
+        resp = make_response(json.dumps(lobby, cls=LobbyEncoder), 200)
+        return resp
     
 class JoinLobbyAPI(Resource):
     def post(self):
@@ -97,6 +100,8 @@ class JoinLobbyAPI(Resource):
             if l.name == lobby_name:
                 l.AddPlayer(player_obj)
                 break
+        resp = make_response(200)
+        return resp
 
 class StartGameAPI(Resource):
     def post(self):
@@ -109,6 +114,9 @@ class StartGameAPI(Resource):
                 games.append(g)
                 break
 
+        resp = make_response(200)
+        return resp
+
 class PackInGameAPI(Resource):
     def post(self):
         args = parser.parse_args()
@@ -119,7 +127,8 @@ class PackInGameAPI(Resource):
             if g.name == lobby_name:
                 for idx, p in enumerate(g.players):
                     if p.name == player_name:
-                        return json.dumps(g.packs[idx], cls=PackEncoder)
+                        resp = make_response(json.dumps(g.packs[idx], cls=PackEncoder), 200)
+                        return resp
                         
 
         
